@@ -1,0 +1,22 @@
+digraph AI_Safety_Pipeline {
+	U [label="User Input" color=lightblue shape=box style=filled]
+	A [label="Abuse Detection" color=lightcoral shape=box style=filled]
+	E [label="Escalation Recognition" color=gold shape=box style=filled]
+	C [label="Crisis Detection" color=lightgreen shape=box style=filled]
+	F [label="Content Filtering" color=plum shape=box style=filled]
+	D [label="Decision Engine" color=lightgray shape=ellipse style=filled]
+	O1 [label="✅ Allow" shape=box]
+	O2 [label="⚠️ Warn/Block" shape=box]
+	O3 [label="🚨 Escalate" shape=box]
+	U -> A
+	U -> E
+	U -> C
+	U -> F
+	A -> D
+	E -> D
+	C -> D
+	F -> D
+	D -> O1
+	D -> O2
+	D -> O3
+}

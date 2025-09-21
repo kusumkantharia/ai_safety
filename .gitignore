@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pkl
+
+# Virtual Environment
+venv/
+.env/
+
+# Data
+data/raw/*
+!data/sample/   # keep only small sample files
+
+# Logs and temp
+*.log
+*.tmp

@@ -1,0 +1,23 @@
+# Core ML/NLP
+pandas
+numpy
+scikit-learn
+joblib
+
+# Deep Learning
+torch
+torchvision
+torchaudio
+transformers
+datasets
+
+# Visualization
+matplotlib
+seaborn
+
+# Jupyter (optional, for notebooks)
+notebook
+jupyterlab
+
+# Utility
+tqdm
