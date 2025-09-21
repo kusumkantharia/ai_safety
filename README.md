@@ -1,185 +1,167 @@
-🤖 AI Safety Models Proof of Concept (POC)
+🤖 AI Safety Models – Proof of Concept (POC)
+📌 Overview
 
-This repository contains the implementation of an AI Safety pipeline designed to enhance user safety in conversational AI platforms (e.g., chatbots, messaging systems, or social media).
+This project is a Proof of Concept (POC) for AI Safety Models, developed as part of Solulab’s Machine Learning assignment.
 
-The system integrates four machine learning models to handle harmful content in real-time:
+The goal is to demonstrate how machine learning can be applied to enhance user safety in chat platforms by detecting and handling unsafe or harmful messages in real time.
 
-Abuse Language Detection
+The POC integrates four models into a moderation pipeline:
 
-Escalation Pattern Recognition
+Abuse Language Detection → Flags toxic, obscene, insulting, or threatening text.
 
-Crisis Intervention
+Escalation Pattern Recognition → Detects when conversations become emotionally dangerous.
 
-Content Filtering (Age-Appropriate Moderation)
+Crisis Intervention → Identifies severe distress or SUI-related messages for human escalation.
 
-📌 Project Overview
+Content Filtering → Ensures content is age-appropriate based on user profile (kid/teen/adult).
 
-The goal of this project is to build a Proof of Concept (POC) that demonstrates:
-
-Detecting abusive or harmful language in real-time.
-
-Recognizing escalation patterns in conversations.
-
-Identifying crisis situations (self-harm/suicidal ideation).
-
-Filtering content based on age profiles (kid, teen, adult).
-
-The POC integrates these models into a single moderation pipeline that can be used in a chat simulation (CLI) or a web-based Streamlit app.
-
-📂 Repository Structure
+📂 Project Structure
 
 ai_safety_poc/
-│── data/                           # Datasets (raw and processed)
-│   ├── raw/
-│   │   ├── jigsaw_toxic/           # Jigsaw dataset for abuse detection
-│   │   ├── escalation/             # DailyDialog for escalation recognition
-│   │   ├── crisis/                 # Suicide detection dataset
-│   │   └── content_filter/         # Safe vs Unsafe dataset
-│── models/                         # Saved trained models (.pkl files)
-│   ├── jigsaw_pipeline.pkl
-│   ├── dailydialog_emotion_model.pkl
-│   ├── crisis_model.pkl
-│   └── content_filter_model.pkl
-│── src/                            # Source code
-│   ├── preprocessing/              # Preprocessing scripts
+│
+├── data/
+│   └── raw/
+│       ├── jigsaw_toxic/              # Abuse dataset (train.csv, test.csv)
+│       ├── escalation/                # DailyDialog / EmpatheticDialogues
+│       │   ├── train.csv
+│       │   ├── test.csv
+│       │   └── validation.csv
+│       ├── crisis/                    # Crisis/SUI dataset
+│       │   └── Suicide_Detection.csv
+│       └── content_filter/            # Content filter dataset
+│           ├── train.csv
+│           ├── test.csv
+│           └── test_labels.csv
+│
+├── models/                            # Trained models (saved as .pkl)
+│   ├── jigsaw_pipeline.pkl            # Abuse detection pipeline
+│   ├── dailydialog_emotion_model.pkl  # Escalation (emotions)
+│   ├── crisis_model.pkl               # Crisis detection
+│   └── content_filter_model.pkl       # Content filtering
+│   
+│
+├── src/
+│   ├── preprocessing/                 # Preprocessing scripts
 │   │   ├── preprocess_jigsaw.py
 │   │   ├── preprocess_dailydialog.py
 │   │   ├── preprocess_crisis.py
 │   │   └── preprocess_content.py
-│   ├── training/                   # Model training scripts
+│   │
+│   ├── training/                      # Model training scripts
 │   │   ├── train1_jigsaw_baseline.py
 │   │   ├── train_dailydialog_baseline.py
 │   │   ├── train_crisis_baseline.py
 │   │   └── train_content_baseline.py
-│   └── inference/                  # Inference / chatbot integration
-│       ├── chat_pipeline.py        # Unified moderation pipeline
-│       └── chatbot_app.py          # Streamlit chatbot app
-│── requirements.txt                # Python dependencies
-│── README.md                       # Project documentation
+│   │
+│   ├── inference/                     # Prediction & chatbot pipeline
+│   │   ├── predict_jigsaw.py
+│   │   ├── predict_dailydialog.py
+│   │   ├── predict_crisis.py
+│   │   ├── predict_content.py
+│   │   ├── chat_pipeline.py           # Command-line moderation pipeline
+│   │   └── chatbot_app.py             # Streamlit chatbot app
+│   │
+│   └── evaluation/                    # Model evaluation + reports
+│       └── eval_reports.py
+│
+├── reports/                           # Generated outputs
+│   ├── abuse_report.jpg
+│   ├── escalation_report.jpg
+│   ├── crisis_report.jpg
+│   ├── content_report.jpg
+│   └── confusion_matrices/            # Optional sub-folder
+│
+├── requirements.txt                   # Python dependencies
+├── README.md                          # Project documentation
+├── save_pipeline_diagram.py           # Optional: ASCII/Graphviz diagram
+└── report.pdf                         # Final technical report (submission)
 
 
-⚙️ Setup & Installation
-
-1. Clone the repository
-git clone <your_repo_url>
+⚙️ Setup Instructions
+1. Clone Repository
+git clone https://github.com/<your-username>/ai_safety.git
 cd ai_safety_poc
 
-2. Create virtual environment
+2. Create Virtual Environment
 python -m venv venv
-source venv/bin/activate   # Linux/Mac
 venv\Scripts\activate      # Windows
 
-3. Install dependencies
+3. Install Dependencies
 pip install -r requirements.txt
 
-📊 Datasets Used
-Model	Dataset Used	Source
-Abuse Detection	Jigsaw Toxic Comment Classification	Kaggle
-Escalation Recognition	DailyDialog (emotion labels)	HuggingFace
-Crisis Intervention	Suicide Detection Dataset	Kaggle / Reddit-based
-Content Filtering	Jigsaw (repurposed for Safe/Unsafe)	Kaggle
+📊 Datasets
 
-⚠️ Note: All datasets are publicly available and anonymized.
+We used publicly available, anonymized datasets:
 
-🚀 Training the Models
+Jigsaw Toxic Comment
+ → Abuse detection
 
-Train each model individually:
+DailyDialog
+ → Escalation recognition
 
-1. Abuse Detection
-python -m src.training.train1_jigsaw_baseline
+Suicide Detection Dataset
+ → Crisis intervention
 
-2. Escalation Recognition
+Repurposed Safe/Unsafe labels from Jigsaw → Content filtering
+
+👉 Note: Full datasets are not uploaded (to avoid large files). Please download via Kaggle/HuggingFace and place them inside data/raw/<task_name>/.
+
+🚀 Running the POC
+1. Train Models
+
+Each model has a training script under src/training/. Example:
+
+python -m src.training.train_jigsaw_baseline
 python -m src.training.train_dailydialog_baseline
-
-3. Crisis Intervention
 python -m src.training.train_crisis_baseline
-
-4. Content Filtering
 python -m src.training.train_content_baseline
 
 
-Trained models are stored in the models/ folder.
+Models will be saved in models/.
 
-🔎 Running the Moderation Pipeline
+2. Run Moderation Pipeline
 
-Run the CLI chat pipeline:
+Use the chat pipeline to test integrated models:
 
 python -m src.inference.chat_pipeline
 
 
-Example:
+You can type sample inputs, and the system will return:
 
-AI Safety Chat Pipeline (type 'exit' to quit)
-Enter user profile (kid/teen/adult): kid
+Abuse check results
 
-User >> You are an idiot
---- Moderation Results ---
-Abuse: toxic, insult
-Emotion: Neutral
-Crisis: Not Crisis
-Content Filter: Unsafe for kids
-Final Action: ⚠️ Block message
+Emotion/escalation check
 
-💬 Running the Chatbot (Web UI)
+Crisis check
 
-Start the Streamlit chatbot app:
+Content filter decision
 
-streamlit run src/inference/chatbot_app.py
+Final moderation action
 
+📈 Evaluation
 
-Open in browser: http://localhost:8501
+Abuse Detection → F1 ≈ 0.66 (toxic/insult strong)
 
-Select user profile (kid/teen/adult).
+Escalation Recognition → Accuracy ≈ 88%
 
-Enter chat messages and see moderation in action.
+Crisis Intervention → Accuracy ≈ 90%
 
-📈 Model Performance
-Model	Metric	Score
-Abuse Detection	Weighted F1	~0.66
-Escalation Recognition	Macro F1	~0.23 (imbalanced)
-Crisis Intervention	Accuracy	~0.90
-Content Filtering	Accuracy	~0.92
-🏗️ High-Level Architecture
-User Input → Preprocessing → 4 Models
-     │
-     ├─ Abuse Detector → toxic/insult/etc.
-     ├─ Escalation → anger/fear/joy/etc.
-     ├─ Crisis → sui / non-sui
-     ├─ Content Filter → safe / unsafe
-     ↓
-Decision Engine → Final Action
-     (Allow / Warn / Block / Escalate)
+Content Filtering → Accuracy ≈ 92%
 
-⚖️ Ethical Considerations
+🧭 Ethical Considerations
 
-Bias Mitigation: Models trained on public datasets, but may underperform on slang/dialects.
+Only public, anonymized datasets are used.
 
-Privacy: No personal/private user data was used.
+Models are balanced to reduce bias.
 
-Explainability: Chose Logistic Regression + TF-IDF for transparency.
+Crisis cases always escalate to human moderators, never automated responses.
 
 🔮 Future Improvements
 
-Upgrade models to BERT/RoBERTa for higher accuracy.
+Upgrade to transformer-based models (BERT, DistilBERT).
 
-Add multilingual support (non-English text).
+Add multilingual support.
 
-Deploy as a REST API or integrate with real chat apps.
+Build moderator dashboard with human feedback loop.
 
-Continuous monitoring for fairness and bias.
-
-👨‍💻 Author
-
-Machine Learning Candidate - AI Safety POC
-
-Built for demonstrating end-to-end ML solution design, training, evaluation, and integration.
-
-📌 Deliverables in this Repo:
-
-✅ Source code for preprocessing, training, inference.
-
-✅ Trained models (.pkl).
-
-✅ README.md (this document).
-
-✅ Scripts for evaluation & reports.
+Deploy as microservices for real-time scaling.
